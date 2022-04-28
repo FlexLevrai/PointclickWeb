@@ -1,0 +1,33 @@
+<div class="leftHalf" style="background-image: url('../assets/img/bg.jpeg')">
+</div>
+
+<div class="rightHalf">
+  <div class="position-relative">
+    <!--login form-->
+    <div class="login-form">
+      <h4 class="text-uppercase- text-purple text-center mb-5">
+        <img id="pointLogo" src="../assets/img/pointlog.png" alt="">
+        </h4>
+      <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
+        <div style="border-radius: 50px;" class="alert alert-danger alert-dismissible fade show" role="alert"
+                    *ngIf="err == 1">
+                    Identifiant ou Mot de passe Incorrect !
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+        <div class="form-group">
+          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Identifiant" name="username" ngModel="">
+        </div>
+        <div class="form-group mb-4">
+          <input type="password" class="form-control" name="password" placeholder="Mot de passe" ngModel="">
+        </div>
+
+        <div class="form-group clearfix">
+          <button type="submit" class="btn btn-purple btn-pill float-right">Connexion</button>
+        </div>
+      </form>
+    </div>
+    <!--/login form-->
+  </div>
+</div>
