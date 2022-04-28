@@ -1,0 +1,8 @@
+#pointLogo {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 150px;
+    height: 100px;
+}

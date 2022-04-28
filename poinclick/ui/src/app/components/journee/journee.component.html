@@ -1,0 +1,117 @@
+<div class="page-title mb-4 d-flex align-items-center">
+    <div class="mr-auto">
+      <h4 class="weight500 d-inline-block pr-3 mr-3 border-right">Donnée de référence</h4>
+      <nav aria-label="breadcrumb" class="d-inline-block ">
+        <ol class="breadcrumb p-0">
+          <li class="breadcrumb-item"><a href="#">Gestion des Journées </a></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  
+  <div class="container-fluid">
+    <div class="container col-md-12">
+      <div class="card card-shadow">
+  
+        <div class="card-header border-0">
+          <div class="custom-title-wrap bar-success">
+            <div class="custom-title">Saisie des Informations</div>
+          </div>
+        </div>
+  
+        <div class="card-body ">
+          <div class="col-md-12">
+  
+            <div class="row">
+  
+              <!-- FORMULAIRE DE SAISIE DES INFORMATIONS -->
+              <div class="col-md-3">
+  
+                <form [formGroup]="journeeService.JourneeFormGroup">
+  
+                  <div class="col-md-12">
+                    <mat-form-field>
+                      <mat-label>Jour</mat-label>
+                      <input name="libelleJournee" required matInput class="police-capitalize " formControlName="libelle" [(ngModel)]="journee.libelle" >
+                      <mat-error *ngIf="journeeService.JourneeFormGroup.controls['libelle'].errors?.required">Ne peut être vide</mat-error>
+                    </mat-form-field>
+                  </div>
+  
+                </form>
+                <button (click)="OnVide()" mat-raised-button  class="btn" style="margin: 2%; background-color: #6c757d;color: white"><i class="fa fa-eraser" ></i>  Annuler</button>
+                <button (click)="OnSavejournee()" *ngIf="amodifier == 0" [disabled]="journeeService.JourneeFormGroup.invalid" mat-raised-button  class="btn" color="primary"><i class="fa fa-plus"></i>  Valider</button>
+                <button (click)="OnUpdatejournee()" *ngIf="amodifier == 1" mat-raised-button  class="btn" style="background-color:#4CAF50;color: white"><i class="fa fa-repeat"></i>  Modifier</button>
+  
+              </div>
+  
+              <!-- TABLEAU D'AFFICHAGE DES INFORMATIONS  SAISIE ET DISPONIBLE DANS LA BASE DE DONNEE -->
+              <div class="col-md-9">
+                <p>
+                  <mat-toolbar color="primary">
+                    <button mat-icon-button  class="example-icon btn" aria-label="Example icon-button with menu icon">
+                      <mat-icon>menu</mat-icon>
+                    </button>
+                    <span> Liste des Jours </span>
+                    <span class="example-spacer"></span>
+                    <button mat-icon-button  class="example-icon btn favorite-icon" aria-label="Example icon-button with heart icon">
+                      <mat-icon>print</mat-icon>
+                    </button>
+                    <button mat-icon-button class="btn" [matMenuTriggerFor]="menus" aria-label="Example icon-button with a menu">
+                      <mat-icon>import_export</mat-icon>
+                    </button>
+                    <mat-menu #menus="matMenu">
+                      <button class="btn" mat-menu-item><mat-icon>dialpad</mat-icon><span>Export CSV</span></button>
+                      <button class="btn" mat-menu-item><mat-icon>notifications_off</mat-icon><span>Importer CSV</span></button>
+                    </mat-menu>
+                  </mat-toolbar>
+  
+                </p>
+                <ng-container *ngIf="journee$ | async as result" [ngSwitch]="result.dataState">
+                  <ng-container *ngSwitchCase="DataStateEnum.LOADING" >En Cours de Chargement .......</ng-container>
+                  <ng-container *ngSwitchCase="DataStateEnum.ERROR" >
+                    <div class="alert alert-danger alert-dismissible fade show">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>{{result.errorMessage}}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="DataStateEnum.LOADED" >
+                    <table class="table table-sm table-bordered">
+                      <thead class="thead-light">
+                      <tr>
+                        <th  style="width: 3%;">N</th>
+                        <th  style="width: 15%;">Libelle Jour</th>
+                        <th  style="width: 6%;">Opérations</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let a of result.datase | paginate:{itemsPerPage:5,currentPage:page,totalItems:result.dataLength} ; let i = index">
+                        <th style="width: 3%;">{{i + 1}}</th>
+                        <td style="width: 10%;">{{a.libelle}}</td>
+                        <td style="width: 6%;" class="text-center">
+                          <button mat-icon-button (click)="OnEditjournee(a.id)" style="background-color: #69F0AE;margin: 1%"  class="example-icon btn favorite-icon" aria-label="Example icon-button with heart icon"><mat-icon>update</mat-icon> </button>
+                          <button mat-icon-button *ngIf="a.etat==true" style="background-color: #CDDC39;margin: 1%"  class="example-icon btn favorite-icon" aria-label="Example icon-button with heart icon"><mat-icon>play_arrow</mat-icon> </button>
+                          <button mat-icon-button (click)="OnActivatejournee(a.id)" *ngIf="a.etat==false" style="background-color: #CDDC39;margin: 1%"  class="example-icon btn favorite-icon" aria-label="Example icon-button with heart icon"><mat-icon>pause</mat-icon> </button> 
+                          <button mat-icon-button (click)="OnDeletejournee(a.id)" style="background-color: #FF5252;margin: 1%"  class="example-icon btn favorite-icon" aria-label="Example icon-button with heart icon"><mat-icon>delete</mat-icon> </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                      <thead class="thead-light">
+                      <tr>
+                        <th colspan="4" scope="col">#</th>
+                      </tr>
+                      </thead>
+                    </table>
+                    <pagination-controls (pageChange)="page = $event" class="text-center"></pagination-controls>
+                  </ng-container>
+                </ng-container>
+  
+              </div>
+  
+            </div>
+  
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
